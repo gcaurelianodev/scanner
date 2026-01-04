@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>System Verification</title>
+<style>
+body {
+  background: #000;
+  color: #00ff9c;
+  font-family: Consolas, monospace;
+  margin: 0;
+  padding: 20px;
+}
+#terminal {
+  max-width: 900px;
+  margin: auto;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.progress {
+  width: 100%;
+  background: #111;
+  border: 1px solid #00ff9c;
+  margin: 10px 0;
+}
+.bar {
+  height: 18px;
+  width: 0%;
+  background: #00ff9c;
+}
+.alert {
+  color: #ff4444;
+  font-weight: bold;
+}
+.warning {
+  color: #ffaa00;
+}
+.final {
+  color: #fff;
+  font-size: 16px;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div id="terminal"></div>
+
+<script>
+const terminal = document.getElementById("terminal");
+
+const lines = [
+  "Inicializando módulo de verificação automática...",
+  "",
+  "Estabelecendo sessão segura...",
+  "✔ Sessão ativa detectada",
+  "✔ Protocolo sincronizado",
+  "",
+  "[PROCESSO 1/4] Verificando integridade do ambiente",
+  "progress",
+  "",
+  "✔ Resposta válida recebida",
+  "✔ Ambiente operacional",
+  "",
+  "[PROCESSO 2/4] Analisando comportamento da sessão",
+  "progress",
+  "",
+  "⚠ Atenção: padrão fora do esperado",
+  "",
+  "[PROCESSO 3/4] Cruzando parâmetros temporários",
+  "progress",
+  "",
+  "✔ Análise concluída",
+  "",
+  "[PROCESSO 4/4] Finalizando varredura",
+  "progress",
+  "",
+  "❌ ALERTA CRÍTICO",
+  "Atividade inconsistente detectada nesta sessão.",
+  "Recomendação: Encerrar imediatamente.",
+  "",
+  "Aguardando ação do sistema..."
+];
+
+let i = 0;
+
+function addLine(text, cls = "") {
+  const div = document.createElement("div");
+  if (cls) div.className = cls;
+  div.textContent = text;
+  terminal.appendChild(div);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function addProgress(callback) {
+  const container = document.createElement("div");
+  container.className = "progress";
+  const bar = document.createElement("div");
+  bar.className = "bar";
+  container.appendChild(bar);
+  terminal.appendChild(container);
+
+  let width = 0;
+  const interval = setInterval(() => {
+    width += Math.random() * 12;
+    if (width >= 100) {
+      width = 100;
+      clearInterval(interval);
+      setTimeout(callback, 700);
+    }
+    bar.style.width = width + "%";
+  }, 300);
+}
+
+function run() {
+  if (i >= lines.length) {
+    setTimeout(showFinal, 2500);
+    return;
+  }
+
+  if (lines[i] === "progress") {
+    i++;
+    addProgress(run);
+    return;
+  }
+
+  if (lines[i].includes("ALERTA")) {
+    addLine(lines[i], "alert");
+  } else if (lines[i].includes("Atenção")) {
+    addLine(lines[i], "warning");
+  } else {
+    addLine(lines[i]);
+  }
+
+  i++;
+  setTimeout(run, 700);
+}
+
+function showFinal() {
+  terminal.innerHTML += `
+  <div class="final">
+    <br>
+    😈 <strong>RELAXA.</strong><br><br>
+    Isso foi apenas uma simulação visual.<br>
+    Nenhum dado foi coletado.<br>
+    Nenhuma informação foi salva.<br><br>
+    Tu caiu no efeito psicológico 😭
+  </div>`;
+}
+
+run();
+</script>
+
+</body>
+</html>
